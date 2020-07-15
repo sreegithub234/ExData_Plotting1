@@ -1,0 +1,37 @@
+library(lubridate)
+hpow <- read.delim('data/household_power_consumption.txt', sep =';',na.strings = "?")[66638:69517,]
+hpow$Date <- dmy(hpow$Date)
+hpow$datetime <- ymd_hms(paste(hpow$Date, hpow$Time, sep = " "))
+png("plot4.png", width = 480, height = 480)
+plot.new()
+par(mfrow = c(2,2))
+with(hpow, {
+    plot(datetime, Global_active_power, type = "n", ann = FALSE)
+    lines(datetime, Global_active_power)
+    title(ylab = "Global Active Power (kilowatts)")
+})
+with(hpow, {
+    plot(datetime, Voltage, type = "n", ann = FALSE)
+    lines(datetime, Voltage)
+    title(ylab = "Voltage", xlab = "datetime")
+})
+with(hpow, {
+    plot(datetime,Sub_metering_3, ann = FALSE, type = "n",
+         ylim = c(0, max(hpow[c('Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3')])))
+    lines(datetime,Sub_metering_1, col = "black")
+    lines(datetime,Sub_metering_2, col = "red")
+    lines(datetime,Sub_metering_3, col = "blue")
+    legend("topright", legend = c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"),
+           col = c("black", "red", "blue"),
+           border = "white",
+           bty = "n",
+           lty = 1)
+    title(ylab = "Energy sub metering")
+    
+})
+with(hpow, {
+    plot(datetime, Global_reactive_power, type = "n")
+    lines(datetime, Global_reactive_power)
+})
+
+
